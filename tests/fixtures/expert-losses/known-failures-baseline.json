@@ -1,0 +1,4 @@
+{
+  "description": "CI must fail when the known-failure set changes without an explicit review.",
+  "allowedIds": []
+}

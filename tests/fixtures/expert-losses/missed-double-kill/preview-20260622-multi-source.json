@@ -1,0 +1,67 @@
+{
+  "app": "gomoku",
+  "schema": "expert-loss-fixture",
+  "schemaVersion": 1,
+  "id": "preview-20260622-multi-source",
+  "category": "missed-double-kill",
+  "categoryLabel": "漏防双杀",
+  "status": "resolved",
+  "createdAt": "2026-06-22T08:38:00.000Z",
+  "diagnosis": {
+    "confidence": 0.99,
+    "reasons": [
+      "白第14手只占据第一个威胁入口，没有验证其余下一层杀源",
+      "白第20手时黑方已保留至少一个双杀入口，白第22手局面无解"
+    ]
+  },
+  "failure": {
+    "positionPly": 13,
+    "aiMove": { "row": 7, "col": 10 },
+    "aiStage": "threat-space-defense",
+    "playerImmediateWinsAfter": 0,
+    "playerDoubleKillsAfter": 0
+  },
+  "expectation": {
+    "outcome": "expert-must-not-lose",
+    "acceptableMoves": [
+      { "row": 8, "col": 7 },
+      { "row": 8, "col": 8 },
+      { "row": 9, "col": 7 }
+    ],
+    "avoidMoves": [{ "row": 7, "col": 10 }]
+  },
+  "game": {
+    "app": "gomoku",
+    "boardSize": 15,
+    "createdAt": "2026-06-22T08:38:00.000Z",
+    "aiLevel": "expert",
+    "mode": "ai",
+    "resultText": "你赢了",
+    "winner": 1,
+    "moves": [
+      { "row": 7, "col": 7, "player": 1, "step": 1 },
+      { "row": 7, "col": 6, "player": 2, "step": 2 },
+      { "row": 6, "col": 7, "player": 1, "step": 3 },
+      { "row": 5, "col": 7, "player": 2, "step": 4 },
+      { "row": 8, "col": 6, "player": 1, "step": 5 },
+      { "row": 6, "col": 8, "player": 2, "step": 6 },
+      { "row": 7, "col": 9, "player": 1, "step": 7 },
+      { "row": 5, "col": 8, "player": 2, "step": 8 },
+      { "row": 7, "col": 8, "player": 1, "step": 9 },
+      { "row": 5, "col": 6, "player": 2, "step": 10 },
+      { "row": 5, "col": 5, "player": 1, "step": 11 },
+      { "row": 6, "col": 6, "player": 2, "step": 12 },
+      { "row": 7, "col": 5, "player": 1, "step": 13 },
+      { "row": 7, "col": 10, "player": 2, "step": 14 },
+      { "row": 9, "col": 7, "player": 1, "step": 15 },
+      { "row": 6, "col": 4, "player": 2, "step": 16 },
+      { "row": 8, "col": 7, "player": 1, "step": 17 },
+      { "row": 10, "col": 7, "player": 2, "step": 18 },
+      { "row": 8, "col": 5, "player": 1, "step": 19 },
+      { "row": 8, "col": 8, "player": 2, "step": 20 },
+      { "row": 6, "col": 5, "player": 1, "step": 21 },
+      { "row": 9, "col": 5, "player": 2, "step": 22 },
+      { "row": 4, "col": 5, "player": 1, "step": 23 }
+    ]
+  }
+}

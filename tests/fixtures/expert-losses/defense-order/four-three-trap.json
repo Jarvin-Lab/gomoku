@@ -1,0 +1,83 @@
+{
+  "app": "gomoku",
+  "schema": "expert-loss-fixture",
+  "schemaVersion": 2,
+  "id": "expert-loss-four-three-trap",
+  "category": "defense-order",
+  "categoryLabel": "防守次序错误",
+  "status": "resolved",
+  "createdAt": "2026-06-22T00:00:00.000Z",
+  "diagnosis": {
+    "confidence": 0.82,
+    "reasons": ["玩家形成两个直接胜点后，专家只能封堵其中之一"]
+  },
+  "rootCause": {
+    "positionPly": 13,
+    "symptomPositionPly": 19,
+    "aiMove": { "row": 6, "col": 9 },
+    "aiStage": "unknown"
+  },
+  "tags": ["missed-double-kill", "missed-vcf", "defense-order"],
+  "failure": {
+    "positionPly": 19,
+    "aiMove": { "row": 7, "col": 6 },
+    "aiStage": "immediate-defense",
+    "playerImmediateWinsAfter": 1,
+    "playerDoubleKillsAfter": 0
+  },
+  "expectation": {
+    "outcome": "expert-must-not-lose",
+    "acceptableMoves": [],
+    "avoidMoves": [{ "row": 6, "col": 9 }],
+    "invariants": {
+      "maxDecisionMs": 10000,
+      "maxOpponentDoubleKillsAfter": 0,
+      "maxOpponentForcedWinDepth": 3,
+      "maxOpponentImmediateWinsAfter": 1
+    }
+  },
+  "game": {
+    "app": "gomoku",
+    "boardSize": 15,
+    "createdAt": "2026-06-22T00:00:00.000Z",
+    "aiLevel": "expert",
+    "mode": "ai",
+    "resultText": "你赢了",
+    "winner": 1,
+    "moves": [
+      { "row": 7, "col": 7, "player": 1, "step": 1 },
+      { "row": 6, "col": 7, "player": 2, "step": 2 },
+      { "row": 6, "col": 6, "player": 1, "step": 3 },
+      { "row": 8, "col": 8, "player": 2, "step": 4 },
+      { "row": 6, "col": 8, "player": 1, "step": 5 },
+      { "row": 8, "col": 6, "player": 2, "step": 6 },
+      { "row": 7, "col": 9, "player": 1, "step": 7 },
+      { "row": 8, "col": 7, "player": 2, "step": 8 },
+      { "row": 8, "col": 9, "player": 1, "step": 9 },
+      { "row": 7, "col": 5, "player": 2, "step": 10 },
+      { "row": 5, "col": 7, "player": 1, "step": 11 },
+      { "row": 8, "col": 10, "player": 2, "step": 12 },
+      { "row": 5, "col": 9, "player": 1, "step": 13 },
+      { "row": 6, "col": 9, "player": 2, "step": 14 },
+      { "row": 5, "col": 6, "player": 1, "step": 15 },
+      { "row": 5, "col": 8, "player": 2, "step": 16 },
+      { "row": 4, "col": 6, "player": 1, "step": 17 },
+      { "row": 3, "col": 5, "player": 2, "step": 18 },
+      { "row": 3, "col": 6, "player": 1, "step": 19 },
+      {
+        "row": 7,
+        "col": 6,
+        "player": 2,
+        "step": 20,
+        "aiDiagnostics": {
+          "elapsedMs": 0,
+          "logs": ["决策: immediate-defense -> 8行7列"],
+          "nodes": 0,
+          "stage": "immediate-defense",
+          "timedOut": false
+        }
+      },
+      { "row": 2, "col": 6, "player": 1, "step": 21 }
+    ]
+  }
+}

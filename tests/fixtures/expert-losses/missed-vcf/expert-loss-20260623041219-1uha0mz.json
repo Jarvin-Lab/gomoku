@@ -1,0 +1,603 @@
+{
+  "app": "gomoku",
+  "schema": "expert-loss-fixture",
+  "schemaVersion": 2,
+  "id": "expert-loss-20260623041219-1uha0mz",
+  "category": "missed-vcf",
+  "categoryLabel": "漏算 VCF",
+  "status": "resolved",
+  "createdAt": "2026-06-23T04:12:19.582Z",
+  "diagnosis": {
+    "confidence": 0.98,
+    "reasons": [
+      "专家落子后玩家仍有双杀点或两个直接胜点",
+      "回归入口已前移至连续强制链形成前的防守决策"
+    ]
+  },
+  "failure": {
+    "positionPly": 33,
+    "aiMove": {
+      "row": 6,
+      "col": 6
+    },
+    "aiStage": "immediate-defense",
+    "playerImmediateWinsAfter": 2,
+    "playerDoubleKillsAfter": 3
+  },
+  "expectation": {
+    "outcome": "expert-must-not-lose",
+    "acceptableMoves": [],
+    "avoidMoves": [
+      {
+        "row": 7,
+        "col": 7
+      }
+    ],
+    "invariants": {
+      "maxDecisionMs": 10000,
+      "maxOpponentDoubleKillsAfter": 0,
+      "maxOpponentForcedWinDepth": 3,
+      "maxOpponentImmediateWinsAfter": 1
+    }
+  },
+  "game": {
+    "app": "gomoku",
+    "aiDiagnostics": {
+      "elapsedMs": 6,
+      "level": "expert",
+      "logs": [
+        "决策: immediate-defense -> 7行7列"
+      ],
+      "move": {
+        "row": 6,
+        "col": 6
+      },
+      "nodes": 0,
+      "stage": "immediate-defense",
+      "timedOut": false,
+      "threatStats": {
+        "lowScoreSetups": 0,
+        "mustAnswerNodes": 0,
+        "tenukiNodes": 0
+      }
+    },
+    "boardSize": 15,
+    "createdAt": "2026-06-23T04:12:19.582Z",
+    "aiLevel": "expert",
+    "mode": "ai",
+    "moves": [
+      {
+        "col": 7,
+        "player": 1,
+        "row": 4,
+        "step": 1
+      },
+      {
+        "col": 7,
+        "player": 2,
+        "row": 5,
+        "step": 2,
+        "aiDiagnostics": {
+          "elapsedMs": 43,
+          "logs": [
+            "专家开局库: 自由形 / 厚势续走-128",
+            "决策: expert-opening-book -> 6行8列"
+          ],
+          "nodes": 0,
+          "stage": "expert-opening-book",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 8,
+        "player": 1,
+        "row": 4,
+        "step": 3
+      },
+      {
+        "col": 9,
+        "player": 2,
+        "row": 4,
+        "step": 4,
+        "aiDiagnostics": {
+          "elapsedMs": 1590,
+          "logs": [
+            "专家: 当前威胁不足，跳过 VCF/VCT",
+            "专家: 评分搜索完成深度1",
+            "专家: 评分搜索完成深度2",
+            "专家: 评分搜索完成深度3",
+            "专家: 评分搜索完成深度4",
+            "专家: 评分=-2210.4",
+            "厚势: 势力4 / 连接-8 / 封锁2 / 先手-4 / 威胁源1:2",
+            "决策: score-search -> 5行10列"
+          ],
+          "nodes": 0,
+          "stage": "score-search",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 8,
+        "player": 1,
+        "row": 5,
+        "step": 5
+      },
+      {
+        "col": 8,
+        "player": 2,
+        "row": 6,
+        "step": 6,
+        "aiDiagnostics": {
+          "elapsedMs": 1987,
+          "logs": [
+            "专家: 当前威胁不足，跳过 VCF/VCT",
+            "专家: 评分搜索完成深度1",
+            "专家: 评分搜索完成深度2",
+            "专家: 评分搜索完成深度3",
+            "专家: 评分搜索完成深度4",
+            "专家: 评分=-999997704.55",
+            "厚势: 势力8 / 连接-16 / 封锁4 / 先手-4 / 威胁源2:3",
+            "决策: score-search -> 7行9列"
+          ],
+          "nodes": 0,
+          "stage": "score-search",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 6,
+        "player": 1,
+        "row": 4,
+        "step": 7
+      },
+      {
+        "col": 9,
+        "player": 2,
+        "row": 6,
+        "step": 8,
+        "aiDiagnostics": {
+          "elapsedMs": 2534,
+          "logs": [
+            "专家: 当前威胁不足，跳过 VCF/VCT",
+            "专家: 评分搜索完成深度1",
+            "专家: 评分搜索完成深度2",
+            "专家: 评分搜索完成深度3",
+            "专家: 评分搜索完成深度4",
+            "专家: 评分=-2914.25",
+            "厚势: 势力8 / 连接-9 / 封锁6 / 先手28 / 威胁源4:3",
+            "决策: score-search -> 7行10列"
+          ],
+          "nodes": 0,
+          "stage": "score-search",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 9,
+        "player": 1,
+        "row": 5,
+        "step": 9
+      },
+      {
+        "col": 10,
+        "player": 2,
+        "row": 6,
+        "step": 10,
+        "aiDiagnostics": {
+          "elapsedMs": 3124,
+          "logs": [
+            "专家: 当前威胁不足，跳过 VCF/VCT",
+            "专家: 评分搜索完成深度1",
+            "专家: 评分搜索完成深度2",
+            "专家: 评分搜索完成深度3",
+            "专家: 评分搜索完成深度4",
+            "专家: 评分=-1059.6",
+            "厚势: 势力12 / 连接-15 / 封锁18 / 先手52 / 威胁源3:3",
+            "决策: score-search -> 7行11列"
+          ],
+          "nodes": 0,
+          "stage": "score-search",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 7,
+        "player": 1,
+        "row": 6,
+        "step": 11
+      },
+      {
+        "col": 5,
+        "player": 2,
+        "row": 4,
+        "step": 12,
+        "aiDiagnostics": {
+          "elapsedMs": 2840,
+          "logs": [
+            "专家: 当前威胁不足，跳过 VCF/VCT",
+            "专家: 评分搜索完成深度1",
+            "专家: 评分搜索完成深度2",
+            "专家: 评分搜索完成深度3",
+            "专家: 评分搜索完成深度4",
+            "专家: 评分=-1827.4999999999998",
+            "厚势: 势力27 / 连接-23 / 封锁36 / 先手18 / 威胁源3:5",
+            "决策: score-search -> 5行6列"
+          ],
+          "nodes": 0,
+          "stage": "score-search",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 6,
+        "player": 1,
+        "row": 7,
+        "step": 13
+      },
+      {
+        "col": 5,
+        "player": 2,
+        "row": 8,
+        "step": 14,
+        "aiDiagnostics": {
+          "elapsedMs": 7092,
+          "logs": [
+            "专家进攻候选: 4个",
+            "专家: VCF/VCT 进攻深度3",
+            "专家: VCF/VCT 进攻深度5",
+            "专家: VCF/VCT 进攻深度7",
+            "专家: 检查对手 VCF/VCT 并验证拆杀点",
+            "厚势: 势力38 / 连接-24 / 封锁66 / 先手14 / 威胁源5:4",
+            "决策: score-search -> 9行6列",
+            "应手分类: 必须67 / 可脱先45 / 低分做棋485"
+          ],
+          "nodes": 776,
+          "stage": "score-search",
+          "threatStats": {
+            "lowScoreSetups": 485,
+            "mustAnswerNodes": 67,
+            "tenukiNodes": 45
+          },
+          "timedOut": true
+        }
+      },
+      {
+        "col": 5,
+        "player": 1,
+        "row": 6,
+        "step": 15
+      },
+      {
+        "col": 6,
+        "player": 2,
+        "row": 5,
+        "step": 16,
+        "aiDiagnostics": {
+          "elapsedMs": 2856,
+          "logs": [
+            "专家: 检查威胁空间防守",
+            "专家威胁空间: 发现1个“铺垫→被迫防→四三/双杀”入口",
+            "专家威胁空间拆解: 6行7列",
+            "决策: threat-space-defense -> 6行7列"
+          ],
+          "nodes": 0,
+          "stage": "threat-space-defense",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 4,
+        "player": 1,
+        "row": 5,
+        "step": 17
+      },
+      {
+        "col": 7,
+        "player": 2,
+        "row": 8,
+        "step": 18,
+        "aiDiagnostics": {
+          "elapsedMs": 8144,
+          "logs": [
+            "专家进攻候选: 4个",
+            "专家: VCF/VCT 进攻深度3",
+            "专家: VCF/VCT 进攻深度5",
+            "专家: VCF/VCT 进攻深度7",
+            "专家: 检查对手 VCF/VCT 并验证拆杀点",
+            "专家硬防守: 对手强制威胁1009，防 9行8列",
+            "决策: urgent-threat-defense -> 9行8列",
+            "应手分类: 必须72 / 可脱先41 / 低分做棋520"
+          ],
+          "nodes": 814,
+          "stage": "urgent-threat-defense",
+          "threatStats": {
+            "lowScoreSetups": 520,
+            "mustAnswerNodes": 72,
+            "tenukiNodes": 41
+          },
+          "timedOut": true
+        }
+      },
+      {
+        "col": 4,
+        "player": 1,
+        "row": 6,
+        "step": 19
+      },
+      {
+        "col": 7,
+        "player": 2,
+        "row": 3,
+        "step": 20,
+        "aiDiagnostics": {
+          "elapsedMs": 5001,
+          "logs": [
+            "专家: 检查威胁空间防守",
+            "专家威胁空间: 发现1个“铺垫→被迫防→四三/双杀”入口",
+            "专家威胁空间拆解: 4行8列",
+            "决策: threat-space-defense -> 4行8列"
+          ],
+          "nodes": 0,
+          "stage": "threat-space-defense",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": true
+        }
+      },
+      {
+        "col": 4,
+        "player": 1,
+        "row": 7,
+        "step": 21
+      },
+      {
+        "col": 4,
+        "player": 2,
+        "row": 8,
+        "step": 22,
+        "aiDiagnostics": {
+          "elapsedMs": 5063,
+          "logs": [
+            "专家: 检查威胁空间防守",
+            "专家威胁空间: 发现1个“铺垫→被迫防→四三/双杀”入口",
+            "专家硬防守: 对手强制威胁999，防 9行5列",
+            "专家威胁空间拆解: 9行5列",
+            "决策: threat-space-defense -> 9行5列"
+          ],
+          "nodes": 0,
+          "stage": "threat-space-defense",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 6,
+        "player": 1,
+        "row": 8,
+        "step": 23
+      },
+      {
+        "col": 7,
+        "player": 2,
+        "row": 7,
+        "step": 24,
+        "aiDiagnostics": {
+          "elapsedMs": 5001,
+          "logs": [
+            "专家: 检查威胁空间防守",
+            "专家威胁空间: 发现1个“铺垫→被迫防→四三/双杀”入口",
+            "专家威胁空间拆解: 8行8列",
+            "决策: threat-space-defense -> 8行8列"
+          ],
+          "nodes": 0,
+          "stage": "threat-space-defense",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": true
+        }
+      },
+      {
+        "col": 5,
+        "player": 1,
+        "row": 7,
+        "step": 25
+      },
+      {
+        "col": 7,
+        "player": 2,
+        "row": 9,
+        "step": 26,
+        "aiDiagnostics": {
+          "elapsedMs": 3627,
+          "logs": [
+            "专家: 检查威胁空间防守",
+            "专家威胁空间: 发现1个“铺垫→被迫防→四三/双杀”入口",
+            "专家硬防守: 对手强制威胁999，防 10行8列",
+            "专家威胁空间拆解: 10行8列",
+            "决策: threat-space-defense -> 10行8列"
+          ],
+          "nodes": 0,
+          "stage": "threat-space-defense",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 3,
+        "player": 1,
+        "row": 5,
+        "step": 27
+      },
+      {
+        "col": 2,
+        "player": 2,
+        "row": 4,
+        "step": 28,
+        "aiDiagnostics": {
+          "elapsedMs": 4,
+          "logs": [
+            "决策: immediate-defense -> 5行3列"
+          ],
+          "nodes": 0,
+          "stage": "immediate-defense",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 3,
+        "player": 1,
+        "row": 4,
+        "step": 29
+      },
+      {
+        "col": 2,
+        "player": 2,
+        "row": 3,
+        "step": 30,
+        "aiDiagnostics": {
+          "elapsedMs": 4,
+          "logs": [
+            "决策: immediate-defense -> 4行3列"
+          ],
+          "nodes": 0,
+          "stage": "immediate-defense",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 3,
+        "player": 1,
+        "row": 7,
+        "step": 31
+      },
+      {
+        "col": 2,
+        "player": 2,
+        "row": 7,
+        "step": 32,
+        "aiDiagnostics": {
+          "elapsedMs": 7,
+          "logs": [
+            "决策: immediate-defense -> 8行3列"
+          ],
+          "nodes": 0,
+          "stage": "immediate-defense",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 3,
+        "player": 1,
+        "row": 6,
+        "step": 33
+      },
+      {
+        "col": 6,
+        "player": 2,
+        "row": 6,
+        "step": 34,
+        "aiDiagnostics": {
+          "elapsedMs": 6,
+          "logs": [
+            "决策: immediate-defense -> 7行7列"
+          ],
+          "nodes": 0,
+          "stage": "immediate-defense",
+          "threatStats": {
+            "lowScoreSetups": 0,
+            "mustAnswerNodes": 0,
+            "tenukiNodes": 0
+          },
+          "timedOut": false
+        }
+      },
+      {
+        "col": 3,
+        "player": 1,
+        "row": 8,
+        "step": 35
+      }
+    ],
+    "resultText": "你赢了",
+    "winner": 1
+  },
+  "tags": [
+    "missed-double-kill",
+    "missed-vcf",
+    "defense-order",
+    "search-timeout"
+  ],
+  "rootCause": {
+    "positionPly": 23,
+    "symptomPositionPly": 33,
+    "aiMove": {
+      "row": 7,
+      "col": 7
+    },
+    "aiStage": "threat-space-defense"
+  }
+}

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f5ee" />
+    <title>五子棋</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-panel" aria-label="五子棋游戏">
+        <aside class="control-rail" aria-label="对局设置与回放">
+          <header class="brand-block">
+            <p class="brand-kicker">GOMOKU</p>
+            <h1>五子棋</h1>
+            <p>落子无悔，静候胜机</p>
+          </header>
+
+          <div class="actions" aria-label="游戏操作">
+            <div class="mode-control">
+              <button
+                id="modeButton"
+                class="mode-button"
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded="false"
+              >
+                <span class="button-eyebrow">对局模式</span>
+                <span id="modeButtonText">人机对战</span>
+                <span class="button-choice-hint" aria-hidden="true">
+                  <span class="choice-hint-default">选择</span>
+                  <span class="choice-hint-open">已展开</span>
+                </span>
+              </button>
+              <div id="modeMenu" class="mode-menu" role="menu" hidden>
+                <button class="mode-option" type="button" role="menuitemradio" data-mode="human" aria-checked="false">
+                  双人对战
+                </button>
+                <button class="mode-option" type="button" role="menuitemradio" data-mode="ai" aria-checked="true">
+                  人机对战
+                </button>
+              </div>
+            </div>
+            <div id="difficultyControl" class="difficulty-control">
+              <button
+                id="difficultyButton"
+                class="mode-button"
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded="false"
+              >
+                <span class="button-eyebrow">电脑棋力</span>
+                <span id="difficultyButtonText">专家</span>
+                <span class="button-choice-hint" aria-hidden="true">
+                  <span class="choice-hint-default">选择</span>
+                  <span class="choice-hint-open">已展开</span>
+                </span>
+              </button>
+              <div id="difficultyMenu" class="mode-menu difficulty-menu" role="menu" hidden>
+                <button class="difficulty-option" type="button" role="menuitemradio" data-level="casual" aria-checked="false">
+                  休闲
+                </button>
+                <button class="difficulty-option" type="button" role="menuitemradio" data-level="advanced" aria-checked="false">
+                  进阶
+                </button>
+                <button class="difficulty-option" type="button" role="menuitemradio" data-level="expert" aria-checked="true">
+                  专家
+                </button>
+              </div>
+            </div>
+            <button id="resetButton" class="reset-button" type="button">
+              <span class="button-eyebrow">新对局</span>
+              <span>重新开始</span>
+            </button>
+            <label class="import-button" for="recordFileInput">
+              <span class="button-eyebrow">棋谱</span>
+              <span>导入回放</span>
+            </label>
+            <input id="recordFileInput" class="record-input" type="file" accept="application/json,.json" />
+          </div>
+
+          <div class="replay-zone">
+            <section id="replayPanel" class="replay-panel" aria-label="棋谱回放控制" hidden>
+              <div class="replay-info">
+                <strong>棋谱回放</strong>
+                <span id="replayStepText">0 / 0</span>
+              </div>
+              <div class="replay-controls">
+                <button id="replayStartButton" type="button">开头</button>
+                <button id="replayPrevButton" type="button">上一步</button>
+                <button id="replayPlayButton" type="button">播放</button>
+                <button id="replayNextButton" type="button">下一步</button>
+                <button id="replayEndButton" type="button">结尾</button>
+                <button id="replayExitButton" type="button">退出回放</button>
+              </div>
+            </section>
+            <div class="replay-empty" aria-hidden="true">
+              <span>回放控制</span>
+              <p>导入棋谱后，可逐手查看对局</p>
+            </div>
+          </div>
+        </aside>
+
+        <section class="board-stage" aria-label="棋盘区域">
+          <div class="turn-status" aria-live="polite">
+            <span class="turn-dot" aria-hidden="true"></span>
+            <p id="statusText">黑棋先手</p>
+          </div>
+          <div class="board-frame">
+            <div class="board-wrap">
+              <div id="board" class="board" role="grid" aria-label="15乘15五子棋棋盘"></div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="log-rail" aria-label="对局日志">
+          <header class="log-heading">
+            <div>
+              <p>LIVE ANALYSIS</p>
+              <h2>对局日志</h2>
+            </div>
+            <span class="live-badge">实时</span>
+          </header>
+          <section class="move-log-panel" aria-label="落子记录">
+            <div class="move-log-header">
+              <strong>落子记录</strong>
+              <span>A–P（跳过 I）/ 1–15</span>
+            </div>
+            <ol id="moveLogs" class="move-logs" aria-live="polite"></ol>
+          </section>
+          <section id="aiDebugPanel" class="ai-debug-panel" aria-label="AI搜索日志" hidden>
+            <div class="ai-debug-header">
+              <strong>AI 搜索</strong>
+              <span id="aiDebugSummary">等待落子</span>
+            </div>
+            <ol id="aiDebugLogs" class="ai-debug-logs"></ol>
+          </section>
+          <div class="log-empty">
+            <p>对局开始后，这里会记录电脑的思考路径与搜索信息。</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <div id="resultOverlay" class="result-overlay" hidden>
+      <section class="result-dialog" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+        <button id="closeResultButton" class="result-close" type="button" aria-label="关闭结果弹窗">
+          关闭
+        </button>
+        <p class="result-label">游戏结束</p>
+        <h2 id="resultTitle">黑棋获胜</h2>
+        <div class="result-actions">
+          <button id="downloadRecordButton" class="secondary-action" type="button">下载棋谱</button>
+          <button id="replayRecordButton" class="secondary-action" type="button">回放本局</button>
+          <button id="playAgainButton" class="play-again" type="button">再来一局</button>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

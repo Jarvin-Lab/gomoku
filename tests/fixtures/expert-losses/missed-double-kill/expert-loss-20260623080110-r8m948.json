@@ -1,0 +1,86 @@
+{
+  "app": "gomoku",
+  "schema": "expert-loss-fixture",
+  "schemaVersion": 2,
+  "id": "expert-loss-20260623080110-r8m948",
+  "category": "missed-double-kill",
+  "categoryLabel": "漏防双杀",
+  "status": "resolved",
+  "createdAt": "2026-06-23T08:01:10.150Z",
+  "diagnosis": {
+    "confidence": 0.98,
+    "reasons": [
+      "第19手局面黑方同时存在(4,7)与(8,3)两个冲四入口，专家只压制其中一端",
+      "专家已连续被迫应手3次，但防守排序未计入持续失去先手的累积风险",
+      "第31手后的立即防守无法同时消除直接胜点与双杀入口"
+    ]
+  },
+  "rootCause": {
+    "aiMove": { "row": 4, "col": 7 },
+    "aiStage": "expert-threat-defense",
+    "positionPly": 19,
+    "symptomPositionPly": 31
+  },
+  "tags": ["missed-double-kill", "missed-vcf", "defense-order"],
+  "failure": {
+    "positionPly": 31,
+    "aiMove": { "row": 4, "col": 4 },
+    "aiStage": "immediate-defense",
+    "playerImmediateWinsAfter": 1,
+    "playerDoubleKillsAfter": 2
+  },
+  "expectation": {
+    "outcome": "expert-must-not-lose",
+    "acceptableMoves": [{ "row": 8, "col": 3 }],
+    "avoidMoves": [{ "row": 4, "col": 7 }],
+    "invariants": {
+      "maxDecisionMs": 10000,
+      "maxOpponentDoubleKillsAfter": 0,
+      "maxOpponentForcedWinDepth": 3,
+      "maxOpponentImmediateWinsAfter": 1
+    }
+  },
+  "game": {
+    "app": "gomoku",
+    "boardSize": 15,
+    "createdAt": "2026-06-23T08:01:10.150Z",
+    "aiLevel": "expert",
+    "mode": "ai",
+    "winner": 1,
+    "moves": [
+      { "step": 1, "player": 1, "row": 7, "col": 7 },
+      { "step": 2, "player": 2, "row": 7, "col": 6, "aiDiagnostics": { "stage": "expert-opening-book" } },
+      { "step": 3, "player": 1, "row": 6, "col": 7 },
+      { "step": 4, "player": 2, "row": 5, "col": 7, "aiDiagnostics": { "stage": "score-search" } },
+      { "step": 5, "player": 1, "row": 8, "col": 8 },
+      { "step": 6, "player": 2, "row": 6, "col": 6, "aiDiagnostics": { "stage": "score-search" } },
+      { "step": 7, "player": 1, "row": 5, "col": 6 },
+      { "step": 8, "player": 2, "row": 7, "col": 8, "aiDiagnostics": { "stage": "score-search", "timedOut": true } },
+      { "step": 9, "player": 1, "row": 8, "col": 6 },
+      { "step": 10, "player": 2, "row": 8, "col": 7, "aiDiagnostics": { "stage": "score-search", "timedOut": true } },
+      { "step": 11, "player": 1, "row": 7, "col": 5 },
+      { "step": 12, "player": 2, "row": 6, "col": 9, "aiDiagnostics": { "stage": "score-search", "timedOut": true } },
+      { "step": 13, "player": 1, "row": 9, "col": 6 },
+      { "step": 14, "player": 2, "row": 9, "col": 7, "aiDiagnostics": { "stage": "threat-space-defense" } },
+      { "step": 15, "player": 1, "row": 6, "col": 5 },
+      { "step": 16, "player": 2, "row": 9, "col": 5, "aiDiagnostics": { "stage": "expert-threat-defense" } },
+      { "step": 17, "player": 1, "row": 5, "col": 5 },
+      { "step": 18, "player": 2, "row": 4, "col": 5, "aiDiagnostics": { "stage": "expert-threat-defense" } },
+      { "step": 19, "player": 1, "row": 7, "col": 4 },
+      { "step": 20, "player": 2, "row": 4, "col": 7, "aiDiagnostics": { "stage": "expert-threat-defense" } },
+      { "step": 21, "player": 1, "row": 8, "col": 5 },
+      { "step": 22, "player": 2, "row": 6, "col": 3, "aiDiagnostics": { "stage": "expert-threat-defense" } },
+      { "step": 23, "player": 1, "row": 8, "col": 3 },
+      { "step": 24, "player": 2, "row": 9, "col": 2, "aiDiagnostics": { "stage": "immediate-defense" } },
+      { "step": 25, "player": 1, "row": 8, "col": 4 },
+      { "step": 26, "player": 2, "row": 8, "col": 2, "aiDiagnostics": { "stage": "immediate-defense" } },
+      { "step": 27, "player": 1, "row": 6, "col": 4 },
+      { "step": 28, "player": 2, "row": 9, "col": 4, "aiDiagnostics": { "stage": "expert-threat-defense" } },
+      { "step": 29, "player": 1, "row": 5, "col": 3 },
+      { "step": 30, "player": 2, "row": 4, "col": 2, "aiDiagnostics": { "stage": "immediate-defense" } },
+      { "step": 31, "player": 1, "row": 5, "col": 4 },
+      { "step": 32, "player": 2, "row": 4, "col": 4, "aiDiagnostics": { "stage": "immediate-defense" } },
+      { "step": 33, "player": 1, "row": 5, "col": 2 }
+    ]
+  }
+}
