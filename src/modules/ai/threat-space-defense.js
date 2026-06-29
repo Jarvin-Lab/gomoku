@@ -150,11 +150,12 @@ function findThreatSpacePlans(board, attacker, defender, depth, options, context
     ? 1
     : Math.min(options.planLimit, Math.max(2, Math.ceil(setupCandidates.length / 3)));
   const previousThreatState = createThreatState(board, attacker);
-  for (const { row, col } of setupCandidates) {
+  for (const { row, col, isBridgeSetup = false } of setupCandidates) {
     if (isSearchTimedOut(context)) break;
     const hasPlan = withTemporaryMove(board, row, col, attacker, (nextBoard) => {
       const isTerminal = isDecisiveThreat(nextBoard, row, col, attacker);
       return (
+        (!allowTerminal && isBridgeSetup) ||
         (allowTerminal && isTerminal) ||
         (!isTerminal &&
           forcesThreatSpaceWin(
@@ -229,7 +230,7 @@ function getForcedThreatResponses(board, previousThreatState, attacker, options)
       return getCenterDistanceFromMove(a) - getCenterDistanceFromMove(b);
     })
     .slice(0, options.responseBranches)
-    .map(({ row, col }) => ({ row, col }));
+    .map(({ row, col }) => ({ row, col, isBridgeSetup: false }));
 }
 
 function createThreatState(board, attacker) {
@@ -250,18 +251,85 @@ function moveToKey(move) {
 }
 
 function getSetupCandidates(board, attacker, options) {
-  return getCandidateMoves(board)
+  const evaluatedCandidates = getCandidateMoves(board)
     .map((move) => ({
       ...move,
       details: evaluateMoveDetails(board, move.row, move.col, attacker),
-    }))
+    }));
+  const tacticalSetups = evaluatedCandidates
     .filter(({ details }) => details.score >= options.setupScore)
     .sort((a, b) => {
       if (b.details.score !== a.details.score) return b.details.score - a.details.score;
       return getCenterDistanceFromMove(a) - getCenterDistanceFromMove(b);
     })
     .slice(0, options.setupBranches)
+    .map(({ row, col }) => ({ row, col, isBridgeSetup: true }));
+  const bridgeSetups = getBridgeSetupCandidates(board, attacker, options, evaluatedCandidates);
+  const selected = [];
+  const seen = new Set();
+
+  [...tacticalSetups, ...bridgeSetups].forEach((move) => {
+    const key = moveToKey(move);
+    if (seen.has(key)) return;
+    seen.add(key);
+    selected.push(move);
+  });
+
+  return selected;
+}
+
+function getBridgeSetupCandidates(board, attacker, options, evaluatedCandidates) {
+  const baseSources = getNextLayerThreatSources(board, attacker, options).length;
+  return evaluatedCandidates
+    .map((move) => {
+      const bridge = withTemporaryMove(board, move.row, move.col, attacker, (nextBoard) => {
+        const nextSources = getNextLayerThreatSources(nextBoard, attacker, options).length;
+        return {
+          forcingSources: countForcingSources(nextBoard, attacker, options),
+          nextSources,
+          threatDelta: nextSources - baseSources,
+        };
+      });
+
+      return { ...move, bridge };
+    })
+    .filter(({ bridge }) => {
+      return (
+        bridge.threatDelta >= (options.bridgeThreatDelta ?? 6) &&
+        bridge.nextSources >= (options.bridgeThreatSources ?? 8) &&
+        bridge.forcingSources >= 2
+      );
+    })
+    .sort((a, b) => {
+      const distanceDiff = getCenterDistanceFromMove(a) - getCenterDistanceFromMove(b);
+      if (distanceDiff !== 0) return distanceDiff;
+      if (b.bridge.forcingSources !== a.bridge.forcingSources) {
+        return b.bridge.forcingSources - a.bridge.forcingSources;
+      }
+      if (b.bridge.threatDelta !== a.bridge.threatDelta) {
+        return b.bridge.threatDelta - a.bridge.threatDelta;
+      }
+      if (b.bridge.nextSources !== a.bridge.nextSources) {
+        return b.bridge.nextSources - a.bridge.nextSources;
+      }
+      if (b.details.score !== a.details.score) return b.details.score - a.details.score;
+      return 0;
+    })
+    .slice(0, options.bridgeBranches ?? 4)
     .map(({ row, col }) => ({ row, col }));
+}
+
+function countForcingSources(board, attacker, options) {
+  const threshold = options.bridgeForcingScore ?? options.forcingScore;
+  let count = 0;
+  for (const { row, col } of getCandidateMoves(board)) {
+    const details = evaluateMoveDetails(board, row, col, attacker);
+    if (details.score < threshold) continue;
+    count += 1;
+    if (count >= 3) return count;
+  }
+
+  return count;
 }
 
 function isDecisiveThreat(board, row, col, attacker) {

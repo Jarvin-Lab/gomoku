@@ -63,6 +63,10 @@ export const EXPERT_TIME_BUDGETS = Object.freeze({
 export const EXPERT_THREAT_SPACE_OPTIONS = {
   depth: 4,
   setupBranches: 10,
+  bridgeBranches: 4,
+  bridgeThreatDelta: 6,
+  bridgeThreatSources: 8,
+  bridgeForcingScore: BLOCKED_FOUR_SCORE,
   responseBranches: 8,
   defenseBranches: 14,
   planLimit: 4,
