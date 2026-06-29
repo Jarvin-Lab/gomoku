@@ -22,11 +22,13 @@ import {
 } from "./candidates.js";
 import { evaluateMove, normalizeSearchScore } from "./evaluator.js";
 import { evaluateStrategicPosition } from "./strategic-evaluator.js";
+import { LruCache } from "./lru-cache.js";
 
-let scoreSearchCache = new Map();
+const SCORE_SEARCH_CACHE_LIMIT = 200_000;
+let scoreSearchCache = new LruCache(SCORE_SEARCH_CACHE_LIMIT);
 
 export function resetScoreSearchCache() {
-  scoreSearchCache = new Map();
+  scoreSearchCache = new LruCache(SCORE_SEARCH_CACHE_LIMIT);
 }
 
 /** 在没有更高优先级强制手时选择综合评分最高的落子。 */
@@ -288,6 +290,7 @@ function quiescenceSearch(
     alpha = Math.max(alpha, bestScore);
     if (alpha >= beta) return bestScore;
     for (const { row, col } of candidates) {
+      if (context && isSearchTimedOut(context)) break;
       const moveScore = evaluateMove(board, row, col, currentPlayer);
       if (moveScore === WINNING_MOVE_SCORE) return SEARCH_WIN_SCORE;
       const score = withTemporaryMove(board, row, col, currentPlayer, (nextBoard) =>
@@ -313,6 +316,7 @@ function quiescenceSearch(
   beta = Math.min(beta, bestScore);
   if (alpha >= beta) return bestScore;
   for (const { row, col } of candidates) {
+    if (context && isSearchTimedOut(context)) break;
     const moveScore = evaluateMove(board, row, col, currentPlayer);
     if (moveScore === WINNING_MOVE_SCORE) return -SEARCH_WIN_SCORE;
     const score = withTemporaryMove(board, row, col, currentPlayer, (nextBoard) =>
@@ -410,7 +414,8 @@ function storeScoreSearchEntry(cacheKey, depth, value, alpha, beta) {
 }
 
 function isSearchTimedOut(context) {
-  if (Date.now() <= context.deadline) return false;
+  const safetyMs = context.timeoutSafetyMs ?? 0;
+  if (Date.now() + safetyMs <= context.deadline) return false;
   context.timedOut = true;
   return true;
 }

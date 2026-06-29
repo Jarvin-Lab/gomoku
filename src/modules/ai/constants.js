@@ -49,15 +49,15 @@ export const EXPERT_THREAT_OPTIONS = {
   tenukiBranches: 5,
   sourceBranches: 12,
   responseScore: 100,
-  timeLimitMs: 10000,
+  timeLimitMs: 30000,
 };
 
-// 专家搜索共享总预算，但各阶段有独立上限，避免进攻搜索挤占关键防守时间。
+// 专家阶段预算的比例基准。实际每阶段时限会按专家总时限等比例缩放。
 export const EXPERT_TIME_BUDGETS = Object.freeze({
-  threatDefenseMs: 3200,
-  threatSpaceMs: 2600,
-  threatAttackMs: 1500,
-  scoreSearchMs: 2200,
+  threatDefenseMs: 6200,
+  threatSpaceMs: 2000,
+  threatAttackMs: 1000,
+  scoreSearchMs: 800,
 });
 
 export const EXPERT_THREAT_SPACE_OPTIONS = {

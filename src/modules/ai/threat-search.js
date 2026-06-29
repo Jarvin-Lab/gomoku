@@ -4,6 +4,7 @@ import {
   DOUBLE_OPEN_THREE_SCORE,
   FORCE_ATTACK_SCORE,
   FOUR_THREE_SCORE,
+  OPEN_THREE_SCORE,
   OPEN_THREE_JUMP_THREE_SCORE,
   ROOT_BRANCHES,
   WINNING_MOVE_SCORE,
@@ -32,14 +33,17 @@ import {
   getImmediateWinningMoves,
   hasUnstoppableImmediateThreat,
 } from "./tactics.js";
+import { LruCache } from "./lru-cache.js";
 
-let forcedThreatCache = new Map();
-let forcingContinuationCache = new Map();
+const FORCED_THREAT_CACHE_LIMIT = 400_000;
+const FORCING_CONTINUATION_CACHE_LIMIT = 250_000;
+let forcedThreatCache = new LruCache(FORCED_THREAT_CACHE_LIMIT);
+let forcingContinuationCache = new LruCache(FORCING_CONTINUATION_CACHE_LIMIT);
 
 /** 清空跨回合复用的强制杀缓存。 */
 export function resetExpertThreatSearchCache() {
-  forcedThreatCache = new Map();
-  forcingContinuationCache = new Map();
+  forcedThreatCache = new LruCache(FORCED_THREAT_CACHE_LIMIT);
+  forcingContinuationCache = new LruCache(FORCING_CONTINUATION_CACHE_LIMIT);
 }
 
 /** 迭代加深搜索当前玩家可成立的 VCF/VCT 进攻手。 */
@@ -95,6 +99,10 @@ export function findExpertThreatDefense(board, player, opponent, options, contex
     return null;
   }
 
+  context.detectedOpponentThreatDepth = Math.max(
+    context.detectedOpponentThreatDepth ?? 0,
+    threatDepth,
+  );
   context.logs.push(`专家: 检测到对手深度${threatDepth}强制杀线，开始拆杀验证`);
   const candidateMap = new Map();
   [
@@ -109,19 +117,25 @@ export function findExpertThreatDefense(board, player, opponent, options, contex
   let bestEvaluation = null;
   let bestRisk = null;
 
-  for (const { row, col } of candidateMap.values()) {
+  const candidates = [...candidateMap.values()]
+    .map((move) => ({
+      ...move,
+      evaluation: evaluateCandidate(board, move.row, move.col, player, opponent),
+    }))
+    .sort(compareDefenseProofPriority);
+
+  for (const { row, col, evaluation } of candidates) {
     if (isSearchTimedOut(context)) return bestMove;
     if (board[row]?.[col] !== 0) continue;
 
-    const attackScore = evaluateMove(board, row, col, player);
-    if (attackScore === WINNING_MOVE_SCORE) return { row, col };
+    if (evaluation.attackScore === WINNING_MOVE_SCORE) return { row, col };
 
     const outcome = withTemporaryMove(board, row, col, player, (nextBoard) => {
       const opponentStillWins = hasExpertForcedWin(
         nextBoard,
         opponent,
         opponent,
-        threatDepth - 1,
+        threatDepth,
         true,
         options,
         context,
@@ -138,7 +152,6 @@ export function findExpertThreatDefense(board, player, opponent, options, contex
     }
 
     const risk = outcome.risk;
-    const evaluation = evaluateCandidate(board, row, col, player, opponent);
     if (
       !bestRisk ||
       isLowerThreatRisk(risk, bestRisk) ||
@@ -156,6 +169,9 @@ export function findExpertThreatDefense(board, player, opponent, options, contex
       bestEvaluation = evaluation;
       bestMove = { row, col };
     }
+    if (isStableEmergencyDefense(threatDepth, risk)) {
+      break;
+    }
   }
 
   if (bestMove) {
@@ -166,6 +182,34 @@ export function findExpertThreatDefense(board, player, opponent, options, contex
   }
 
   return bestMove;
+}
+
+function isStableEmergencyDefense(threatDepth, risk) {
+  return threatDepth >= 5 && risk.immediateWins === 0 && risk.doubleKills === 0;
+}
+
+function compareDefenseProofPriority(a, b) {
+  const priorityDiff =
+    getDefenseProofPriority(b.evaluation) - getDefenseProofPriority(a.evaluation);
+  if (priorityDiff !== 0) return priorityDiff;
+  if (isBetterEvaluation(a.evaluation, b.evaluation)) return -1;
+  if (isBetterEvaluation(b.evaluation, a.evaluation)) return 1;
+  return getCenterDistanceFromMove(a) - getCenterDistanceFromMove(b);
+}
+
+function getDefenseProofPriority(evaluation) {
+  const hasCounterThreat = evaluation.attackScore >= OPEN_THREE_SCORE;
+  const blocksHardThreat = evaluation.defenseScore >= FORCE_ATTACK_SCORE;
+  const blocksDevelopingThreat = evaluation.defenseScore >= OPEN_THREE_SCORE;
+  const createsDevelopingThreat = evaluation.attackScore >= OPEN_THREE_SCORE;
+
+  if (blocksHardThreat && hasCounterThreat) return 60;
+  if (blocksDevelopingThreat && createsDevelopingThreat) return 50;
+  if (blocksHardThreat) return 40;
+  if (hasCounterThreat) return 35;
+  if (blocksDevelopingThreat) return 30;
+  if (createsDevelopingThreat) return 20;
+  return 0;
 }
 
 /**
@@ -464,7 +508,8 @@ function getExpertThreatPriority(details) {
 }
 
 function isSearchTimedOut(context) {
-  if (Date.now() <= context.deadline) return false;
+  const safetyMs = context.timeoutSafetyMs ?? 0;
+  if (Date.now() + safetyMs <= context.deadline) return false;
   context.timedOut = true;
   return true;
 }

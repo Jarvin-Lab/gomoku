@@ -1,0 +1,91 @@
+{
+  "app": "gomoku",
+  "schema": "expert-loss-fixture",
+  "schemaVersion": 2,
+  "id": "expert-loss-20260624111542-10p5hwo",
+  "category": "missed-double-kill",
+  "categoryLabel": "漏防双杀",
+  "status": "resolved",
+  "createdAt": "2026-06-24T11:15:42.855Z",
+  "diagnosis": {
+    "confidence": 0.98,
+    "reasons": [
+      "威胁空间防守超时后返回未完整验证的浅层回退点，未真正拆掉玩家深度5强制杀线"
+    ]
+  },
+  "rootCause": {
+    "aiMove": { "row": 8, "col": 5 },
+    "aiStage": "threat-space-defense",
+    "positionPly": 13,
+    "symptomPositionPly": 25
+  },
+  "tags": [
+    "missed-double-kill",
+    "missed-vcf",
+    "defense-order",
+    "search-timeout",
+    "unsafe-timeout-fallback"
+  ],
+  "failure": {
+    "positionPly": 25,
+    "aiMove": { "row": 2, "col": 6 },
+    "aiStage": "immediate-defense",
+    "playerImmediateWinsAfter": 1,
+    "playerDoubleKillsAfter": 3
+  },
+  "expectation": {
+    "outcome": "expert-must-not-lose",
+    "acceptableMoves": [
+      { "row": 4, "col": 4 },
+      { "row": 4, "col": 6 },
+      { "row": 7, "col": 3 }
+    ],
+    "avoidMoves": [
+      { "row": 8, "col": 5 }
+    ],
+    "invariants": {
+      "maxDecisionMs": 10000,
+      "maxOpponentDoubleKillsAfter": 0,
+      "maxOpponentForcedWinDepth": 5,
+      "maxOpponentImmediateWinsAfter": 1
+    }
+  },
+  "game": {
+    "app": "gomoku",
+    "boardSize": 15,
+    "createdAt": "2026-06-24T11:15:42.855Z",
+    "aiLevel": "expert",
+    "mode": "ai",
+    "moves": [
+      { "step": 1, "player": 1, "row": 3, "col": 3 },
+      { "step": 2, "player": 2, "row": 3, "col": 4, "aiDiagnostics": { "stage": "expert-opening-book" } },
+      { "step": 3, "player": 1, "row": 6, "col": 3 },
+      { "step": 4, "player": 2, "row": 4, "col": 5, "aiDiagnostics": { "stage": "expert-opening-book" } },
+      { "step": 5, "player": 1, "row": 6, "col": 7 },
+      { "step": 6, "player": 2, "row": 5, "col": 4, "aiDiagnostics": { "stage": "expert-opening-book" } },
+      { "step": 7, "player": 1, "row": 6, "col": 4 },
+      { "step": 8, "player": 2, "row": 6, "col": 5, "aiDiagnostics": { "stage": "score-search" } },
+      { "step": 9, "player": 1, "row": 5, "col": 5 },
+      { "step": 10, "player": 2, "row": 4, "col": 3, "aiDiagnostics": { "stage": "score-search" } },
+      { "step": 11, "player": 1, "row": 7, "col": 6 },
+      { "step": 12, "player": 2, "row": 5, "col": 2, "aiDiagnostics": { "stage": "score-search" } },
+      { "step": 13, "player": 1, "row": 6, "col": 1 },
+      { "step": 14, "player": 2, "row": 8, "col": 5, "aiDiagnostics": { "stage": "threat-space-defense" } },
+      { "step": 15, "player": 1, "row": 7, "col": 3 },
+      { "step": 16, "player": 2, "row": 4, "col": 6, "aiDiagnostics": { "stage": "expert-threat-defense" } },
+      { "step": 17, "player": 1, "row": 4, "col": 4 },
+      { "step": 18, "player": 2, "row": 6, "col": 6, "aiDiagnostics": { "stage": "expert-threat-defense" } },
+      { "step": 19, "player": 1, "row": 7, "col": 5 },
+      { "step": 20, "player": 2, "row": 7, "col": 7, "aiDiagnostics": { "stage": "expert-threat-defense" } },
+      { "step": 21, "player": 1, "row": 5, "col": 3 },
+      { "step": 22, "player": 2, "row": 4, "col": 2, "aiDiagnostics": { "stage": "expert-threat-defense" } },
+      { "step": 23, "player": 1, "row": 6, "col": 2 },
+      { "step": 24, "player": 2, "row": 6, "col": 0, "aiDiagnostics": { "stage": "immediate-defense" } },
+      { "step": 25, "player": 1, "row": 3, "col": 5 },
+      { "step": 26, "player": 2, "row": 2, "col": 6, "aiDiagnostics": { "stage": "immediate-defense" } },
+      { "step": 27, "player": 1, "row": 7, "col": 1 }
+    ],
+    "resultText": "你赢了",
+    "winner": 1
+  }
+}

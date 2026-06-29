@@ -21,6 +21,7 @@ import {
   WINNING_MOVE_SCORE,
 } from "./constants.js";
 import { boardToKey, buildLine } from "./board.js";
+import { LruCache } from "./lru-cache.js";
 
 const PATTERN_SCORES = [
   { name: "five", patterns: ["11111"], score: WINNING_MOVE_SCORE },
@@ -42,10 +43,14 @@ const PATTERN_SCORES = [
   { name: "blockedTwo", patterns: ["21100", "00112", "21010", "01012"], score: BLOCKED_TWO_SCORE },
 ];
 
-let moveScoreCache = new Map();
+const MOVE_SCORE_CACHE_LIMIT = 300_000;
+const MOVE_DETAILS_CACHE_LIMIT = 300_000;
+let moveScoreCache = new LruCache(MOVE_SCORE_CACHE_LIMIT);
+let moveDetailsCache = new LruCache(MOVE_DETAILS_CACHE_LIMIT);
 
 export function resetMoveScoreCache() {
-  moveScoreCache = new Map();
+  moveScoreCache = new LruCache(MOVE_SCORE_CACHE_LIMIT);
+  moveDetailsCache = new LruCache(MOVE_DETAILS_CACHE_LIMIT);
 }
 
 /** 返回指定落子的缓存棋型分数。 */
@@ -60,13 +65,18 @@ export function evaluateMove(board, row, col, player) {
 
 /** 返回落子的单线、复合威胁和各方向棋型明细。 */
 export function evaluateMoveDetails(board, row, col, player) {
+  const cacheKey = `${boardToKey(board)}|details|${row},${col}|${player}`;
+  if (moveDetailsCache.has(cacheKey)) return moveDetailsCache.get(cacheKey);
+
   if (board[row]?.[col] !== EMPTY) {
-    return {
+    const occupiedDetails = {
       compoundScore: -1,
       lineScore: -1,
       score: -1,
       threats: [],
     };
+    moveDetailsCache.set(cacheKey, occupiedDetails);
+    return occupiedDetails;
   }
 
   const nextBoard = board.map((line) => [...line]);
@@ -85,22 +95,26 @@ export function evaluateMoveDetails(board, row, col, player) {
   }, 0);
 
   if (hasWinningLine) {
-    return {
+    const winningDetails = {
       compoundScore: 0,
       lineScore: WINNING_MOVE_SCORE,
       score: WINNING_MOVE_SCORE,
       threats,
     };
+    moveDetailsCache.set(cacheKey, winningDetails);
+    return winningDetails;
   }
 
   const compoundScore = evaluateCompoundThreat(threats);
 
-  return {
+  const details = {
     compoundScore,
     lineScore,
     score: Math.max(lineScore, compoundScore),
     threats,
   };
+  moveDetailsCache.set(cacheKey, details);
+  return details;
 }
 
 export function evaluateLine(line) {

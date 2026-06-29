@@ -23,12 +23,14 @@ import {
   getImmediateWinningMoves,
   hasUnstoppableImmediateThreat,
 } from "./tactics.js";
+import { LruCache } from "./lru-cache.js";
 
-let threatSpaceCache = new Map();
+const THREAT_SPACE_CACHE_LIMIT = 120_000;
+let threatSpaceCache = new LruCache(THREAT_SPACE_CACHE_LIMIT);
 
 /** 清空威胁空间搜索缓存，避免不同对局间共享旧局面。 */
 export function resetThreatSpaceDefenseCache() {
-  threatSpaceCache = new Map();
+  threatSpaceCache = new LruCache(THREAT_SPACE_CACHE_LIMIT);
 }
 
 /** 搜索并选择可消除对手威胁空间计划的防守落点。 */
@@ -278,7 +280,8 @@ function evaluatePlacedMoveDetails(board, row, col, player) {
 }
 
 function isSearchTimedOut(context) {
-  if (Date.now() <= context.deadline) return false;
+  const safetyMs = context.timeoutSafetyMs ?? 0;
+  if (Date.now() + safetyMs <= context.deadline) return false;
   context.timedOut = true;
   return true;
 }

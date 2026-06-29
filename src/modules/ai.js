@@ -71,7 +71,7 @@ function createSearchContext(level, profile, options = {}) {
   const moveHistory = Array.isArray(options.moveHistory) ? options.moveHistory : [];
   const stageBudgetScale = Number.isFinite(options.stageBudgetScale)
     ? Math.max(1, options.stageBudgetScale)
-    : 1;
+    : getProportionalStageBudgetScale(timeLimitMs);
 
   return {
     deadline: timeLimitMs > 0 ? startAt + timeLimitMs : Number.POSITIVE_INFINITY,
@@ -86,6 +86,9 @@ function createSearchContext(level, profile, options = {}) {
     stageBudgetScale,
     stage: "start",
     startAt,
+    timeoutSafetyMs: Number.isFinite(options.timeoutSafetyMs)
+      ? Math.max(0, options.timeoutSafetyMs)
+      : 80,
     threatStats: {
       lowScoreSetups: 0,
       mustAnswerNodes: 0,
@@ -95,6 +98,15 @@ function createSearchContext(level, profile, options = {}) {
     timeoutStages: [],
     totalDeadline: timeLimitMs > 0 ? startAt + timeLimitMs : Number.POSITIVE_INFINITY,
   };
+}
+
+function getProportionalStageBudgetScale(timeLimitMs) {
+  if (!Number.isFinite(timeLimitMs) || timeLimitMs <= 0) return 1;
+  const baseBudgetMs = Object.values(EXPERT_TIME_BUDGETS).reduce(
+    (total, budgetMs) => total + budgetMs,
+    0,
+  );
+  return Math.max(1, timeLimitMs / baseBudgetMs);
 }
 
 function countForcedResponseStreak(moveHistory) {
@@ -171,8 +183,11 @@ function createProfileAiMove(board, player, profile, context) {
         context,
       ),
     );
-    if (threatSpaceDefense) {
+    if (threatSpaceDefense && !context.timedOut) {
       return finishDecision(context, threatSpaceDefense, "threat-space-defense");
+    }
+    if (threatSpaceDefense && defensiveFallback) {
+      context.logs.push("专家: 威胁空间超时，忽略未完整验证的拆解点");
     }
   }
 

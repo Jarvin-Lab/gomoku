@@ -4,6 +4,7 @@ import { BLOCKED, EMPTY } from "./constants.js";
 const ZOBRIST_SIZE = 15;
 const HASH_MASK = (1n << 64n) - 1n;
 const boardHashCache = new WeakMap();
+const boardKeyCache = new WeakMap();
 const zobristTable = createZobristTable();
 
 export function getOpponent(player) {
@@ -21,7 +22,7 @@ export function simulateMove(board, row, col, player) {
   const nextBoard = board.map((line) => [...line]);
   nextBoard[row][col] = player;
   const previous = board[row][col];
-  boardHashCache.set(nextBoard, updateHash(getBoardHash(board), row, col, previous, player));
+  setBoardHash(nextBoard, updateHash(getBoardHash(board), row, col, previous, player));
   return nextBoard;
 }
 
@@ -30,7 +31,7 @@ export function makeMove(board, row, col, player) {
   const previous = board[row][col];
   const hash = getBoardHash(board);
   board[row][col] = player;
-  boardHashCache.set(board, updateHash(hash, row, col, previous, player));
+  setBoardHash(board, updateHash(hash, row, col, previous, player));
   return previous;
 }
 
@@ -39,7 +40,7 @@ export function unmakeMove(board, row, col, previous = EMPTY) {
   const current = board[row][col];
   const hash = getBoardHash(board);
   board[row][col] = previous;
-  boardHashCache.set(board, updateHash(hash, row, col, current, previous));
+  setBoardHash(board, updateHash(hash, row, col, current, previous));
 }
 
 /** 在回调期间临时落子，确保正常返回或抛错时都会恢复棋盘。 */
@@ -89,7 +90,12 @@ export function getCenterDistanceFromMove(move) {
 
 /** 生成搜索缓存使用的确定性局面键。 */
 export function boardToKey(board) {
-  return getBoardHash(board).toString(16).padStart(16, "0");
+  const cached = boardKeyCache.get(board);
+  if (cached !== undefined) return cached;
+
+  const key = formatBoardHash(getBoardHash(board));
+  boardKeyCache.set(board, key);
+  return key;
 }
 
 export function getBoardHash(board) {
@@ -103,8 +109,17 @@ export function getBoardHash(board) {
       if (player === 1 || player === 2) hash ^= zobristTable[row][col][player - 1];
     }
   }
-  boardHashCache.set(board, hash);
+  setBoardHash(board, hash);
   return hash;
+}
+
+function setBoardHash(board, hash) {
+  boardHashCache.set(board, hash);
+  boardKeyCache.set(board, formatBoardHash(hash));
+}
+
+function formatBoardHash(hash) {
+  return hash.toString(16).padStart(16, "0");
 }
 
 function updateHash(hash, row, col, previous, next) {

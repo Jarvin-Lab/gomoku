@@ -24,6 +24,7 @@
   "expectation": {
     "outcome": "expert-must-not-lose",
     "acceptableMoves": [
+      { "row": 4, "col": 6 },
       { "row": 8, "col": 7 },
       { "row": 8, "col": 8 },
       { "row": 9, "col": 7 }

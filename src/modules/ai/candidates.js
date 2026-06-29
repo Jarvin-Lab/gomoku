@@ -126,15 +126,13 @@ export function getSearchCandidates(board, player, limit, includeReply = false) 
     const evaluation = includeReply
       ? evaluateCandidate(board, move.row, move.col, player, opponent)
       : evaluateCandidateShallow(board, move.row, move.col, player);
-    const opponentAttackScore = evaluateMove(board, move.row, move.col, opponent);
 
     return {
       ...move,
       evaluation,
       isTactical:
         evaluation.attackScore >= URGENT_THREAT_SCORE ||
-        evaluation.defenseScore >= URGENT_THREAT_SCORE ||
-        opponentAttackScore >= URGENT_THREAT_SCORE,
+        evaluation.defenseScore >= URGENT_THREAT_SCORE,
     };
   });
 

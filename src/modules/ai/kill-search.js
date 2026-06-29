@@ -9,14 +9,17 @@ import {
 import { boardToKey, getOpponent, withTemporaryMove } from "./board.js";
 import { evaluateCandidate, getCandidateMoves, getSearchCandidates, isBetterEvaluation } from "./candidates.js";
 import { evaluateMove, evaluateMoveDetails } from "./evaluator.js";
+import { LruCache } from "./lru-cache.js";
 import { getImmediateWinningMoves } from "./tactics.js";
 
-let killMoveCache = new Map();
-let forcedKillCache = new Map();
+const KILL_MOVE_CACHE_LIMIT = 10_000;
+const FORCED_KILL_CACHE_LIMIT = 20_000;
+let killMoveCache = new LruCache(KILL_MOVE_CACHE_LIMIT);
+let forcedKillCache = new LruCache(FORCED_KILL_CACHE_LIMIT);
 
 export function resetKillSearchCache() {
-  killMoveCache = new Map();
-  forcedKillCache = new Map();
+  killMoveCache = new LruCache(KILL_MOVE_CACHE_LIMIT);
+  forcedKillCache = new LruCache(FORCED_KILL_CACHE_LIMIT);
 }
 
 /** 搜索当前玩家的短程强制杀棋首手。 */
